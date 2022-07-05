@@ -81,7 +81,7 @@ stages:
                 $(containerRegistry)/$(imageRepository):$(tag)
           - task: Maven@3
             inputs:
-               mavenPomFile: 'suryagisuryacicd/pom.xml'
+               mavenPomFile: 'users/sipun/sipu-cicd/surya-cicd/pom.xml'
                publishJUnitResults: true
                testResultsFiles: '**/surefire-reports/TEST-*.xml'
                javaHomeOption: 'JDKVersion'
