@@ -22,7 +22,7 @@ variables:
   vmImageName: 'ubuntu-latest'
 
   # Name of the new namespace being created to deploy the PR changes.
-  k8sNamespaceForPR: 'review-app-$(System.PullRequest.PullRequestId)'
+  suryaDev: 'review-app-$(System.PullRequest.PullRequestId)'
 
 stages:
 - stage: Build
@@ -96,7 +96,7 @@ stages:
     pool:
       vmImage: $(vmImageName)
 
-    environment: 'SuryaGIsuryaCICD.$(k8sNamespaceForPR)'
+    environment: 'SuryaGIsuryaCICD.$(suryaDev)'
     strategy:
       runOnce:
         deploy:
@@ -108,21 +108,21 @@ stages:
             inputs:
               command: apply
               useConfigurationFile: true
-              inline: '{ "kind": "Namespace", "apiVersion": "v1", "metadata": { "name": "$(k8sNamespaceForPR)" }}'
+              inline: '{ "kind": "Namespace", "apiVersion": "v1", "metadata": { "name": "$(suryaDev)" }}'
 
           - task: KubernetesManifest@0
             displayName: Create imagePullSecret
             inputs:
               action: createSecret
               secretName: $(imagePullSecret)
-              namespace: $(k8sNamespaceForPR)
+              namespace: $(suryaDev)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
 
           - task: KubernetesManifest@0
             displayName: Deploy to the new namespace in the Kubernetes cluster
             inputs:
               action: deploy
-              namespace: $(k8sNamespaceForPR)
+              namespace: $(suryaDev)
               manifests: |
                 $(Pipeline.Workspace)/manifests/deployment.yml
                 $(Pipeline.Workspace)/manifests/service.yml
@@ -137,7 +137,7 @@ stages:
             continueOnError: true
             inputs:
               command: get
-              namespace: $(k8sNamespaceForPR)
+              namespace: $(suryaDev)
               arguments: svc
               outputFormat: jsonpath='http://{.items[0].status.loadBalancer.ingress[0].ip}:{.items[0].spec.ports[0].port}'
 
