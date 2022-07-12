@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: suryagisuryacicd 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: suryagisuryacicd
+  template:
+    metadata:
+      labels:
+        app: suryagisuryacicd 
+    spec:
+      containers:
+        - name: suryagisuryacicd 
+          image: suryaazure.azurecr.io/suryagisuryacicd
+          ports:
+          - containerPort: 8080
